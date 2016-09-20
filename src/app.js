@@ -3,11 +3,15 @@
 /* Classes */
 const Game = require('./game.js');
 const Player = require('./player.js');
+const Mini = require('./mini.js');
 
 /* Global variables */
 var canvas = document.getElementById('screen');
 var game = new Game(canvas, update, render);
-var player = new Player({x: 0, y: 240})
+var player = new Player({x: 0, y: 240});
+var mini = new Mini(1, {x:64, y: -92});
+var background = new Image();
+background.src = 'assets/background.png';
 
 /**
  * @function masterLoop
@@ -44,5 +48,6 @@ function update(elapsedTime) {
 function render(elapsedTime, ctx) {
   ctx.fillStyle = "lightblue";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(background, 0, 0);
   player.render(elapsedTime, ctx);
 }
