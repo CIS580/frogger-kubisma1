@@ -1,15 +1,24 @@
 "use strict;"
 
+/* Useful constants */
+const CELL_SIZE = 64;
+
 /* Classes */
 const Game = require('./game.js');
 const Player = require('./player.js');
-const Mini = require('./mini.js');
+const Lib = require('./lib.js');
+const RoadManager = require('./road-manager.js');
+const RiverManager = require('./river-manager.js');
 
 /* Global variables */
 var canvas = document.getElementById('screen');
 var game = new Game(canvas, update, render);
-var player = new Player({x: 0, y: 240});
-var mini = new Mini(1, {x:64, y: -92});
+var player = new Player({x: 0, y: 192});
+var lib = new Lib();
+var roadManager = new RoadManager(lib, canvas.width, canvas.height, CELL_SIZE);
+roadManager.init();
+var riverManager = new RiverManager(lib, canvas.width, canvas.height, CELL_SIZE);
+riverManager.init();
 var background = new Image();
 background.src = 'assets/background.png';
 
@@ -35,6 +44,8 @@ masterLoop(performance.now());
  */
 function update(elapsedTime) {
   player.update(elapsedTime);
+  roadManager.update(elapsedTime);
+  riverManager.update(elapsedTime);
   // TODO: Update the game objects
 }
 
@@ -46,8 +57,8 @@ function update(elapsedTime) {
   * @param {CanvasRenderingContext2D} ctx the context to render to
   */
 function render(elapsedTime, ctx) {
-  ctx.fillStyle = "lightblue";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(background, 0, 0);
   player.render(elapsedTime, ctx);
+  roadManager.render(elapsedTime, ctx);
+  riverManager.render(elapsedTime, ctx);
 }

@@ -1,7 +1,7 @@
 "use strict";
 
 const MS_PER_FRAME = 1000/8;
-const JUMP_HEIGHT = 2;
+const PLAYER_FRAMES = 4;
 
 /**
  * @module exports the Player class
@@ -13,7 +13,7 @@ module.exports = exports = Player;
  * Creates a new player object
  * @param {Postition} position object specifying an x and y
  */
-function Player(position) {
+function Player(position, cellSize) {
   this.state = "idle";
   this.x = position.x;
   this.y = position.y;
@@ -44,8 +44,7 @@ Player.prototype.update = function(time) {
       this.timer += time;
       if(this.timer > MS_PER_FRAME) {
         this.timer = 0;
-        this.frame += 1;
-        if(this.frame > 3) this.frame = 0;
+        this.frame = (this.frame + 1) % PLAYER_FRAMES;
       }
       break;
     /*case "jumping":

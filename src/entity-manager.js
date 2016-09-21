@@ -2,7 +2,7 @@
 
 module.exports = exports = EntityManager;
 
-function EntityManager() {
+function EntityManager(width, height, cellSize) {
   this.cellSize = cellSize;
   this.widthInCells = Math.ceil(width / cellSize);
   this.heightInCells = Math.ceil(height / cellSize);
