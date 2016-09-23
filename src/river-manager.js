@@ -24,13 +24,7 @@ const Log = require('./log.js');
 function RiverManager(lib, canvasWidth, canvasHeight, laneWidth) {
   Manager.call(this, lib, canvasWidth, canvasHeight, laneWidth);
 
-  var direction = this.lib.randomIntFromRange(DOWN, UP);
-  this.lanes = [
-    // Cell number for a lane, width of a lane, height of a lane, cars direction in lane, speed of cars in pixels, timeout of a lane, current timer
-    {cell: 7, width: laneWidth, height: canvasHeight, direction: direction, speed: 0.8, timeout: {min: 3100, max: 4200, current: 0}, timer: 0},
-    {cell: 8, width: laneWidth, height: canvasHeight, direction: !direction, speed: 1.3, timeout: {min: 2400, max: 4000, current: 0}, timer: 0},
-    {cell: 9, width: laneWidth, height: canvasHeight, direction: direction, speed: 1.9, timeout: {min: 1800, max: 3000, current: 0}, timer: 0},
-  ]
+  setLanes.call(this);
 
   for(var i = 0; i < LOGS_MAX; i++) {
     this.entityQueue.push(new Log(i, this.lib.randomIntFromRange(LOG_IMG_MIN, LOG_IMG_MAX)));
@@ -38,3 +32,33 @@ function RiverManager(lib, canvasWidth, canvasHeight, laneWidth) {
 }
 
 RiverManager.prototype = Object.create(Manager.prototype);
+
+function setLanes(){
+  var direction = this.lib.randomIntFromRange(DOWN, UP);
+  this.lanes = [
+    // Cell number for a lane, width of a lane, height of a lane, cars direction in lane, speed of cars in pixels, timeout of a lane, current timer
+    {cell: 7, width: this.laneWidth, height: this.canvasHeight, direction: direction, speed: 0.8, timeout: {min: 3100, max: 4200, current: 0}, timer: 0},
+    {cell: 8, width: this.laneWidth, height: this.canvasHeight, direction: !direction, speed: 1.3, timeout: {min: 2400, max: 4000, current: 0}, timer: 0},
+    {cell: 9, width: this.laneWidth, height: this.canvasHeight, direction: direction, speed: 1.9, timeout: {min: 1800, max: 3000, current: 0}, timer: 0},
+  ];
+}
+
+RiverManager.prototype.setLevel = function(level) {
+
+  var self = this;
+  var direction = this.lib.randomIntFromRange(DOWN, UP);
+
+  this.lanes.forEach(function(lane) {
+    if(!(lane.cell % 2)) lane.direction = !direction;
+    else lane.direction = direction;
+
+    lane.speed += Math.pow(level, 1/3) * 0.2;
+    var decrease = self.lib.randomIntFromRange(190, 270);
+    lane.timeout.min -= (lane.timeout.min > 700) ? decrease : 0;
+    lane.timeout.max -= (lane.timeout.max > lane.timeout.min + decrease)? decrease : 0;
+    lane.timer = 0;
+  });
+
+  this.resetLanes();
+
+}

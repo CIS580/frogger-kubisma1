@@ -30,13 +30,7 @@ const RacerCar = require('./car-racer.js');
 function RoadManager(lib, canvasWidth, canvasHeight, laneWidth) {
   Manager.call(this, lib, canvasWidth, canvasHeight, laneWidth);
 
-  this.lanes = [
-    // Cell number for a lane, width of a lane, height of a lane, cars direction in lane, speed of cars in pixels, timeout of a lane, current timer
-    {cell: 1, width: laneWidth, height: canvasHeight, direction: this.lib.randomIntFromRange(DOWN, UP), speed: 2.5, timeout: {min: 3500, max: 5000, current: 0}, timer: 0},
-    {cell: 2, width: laneWidth, height: canvasHeight, direction: this.lib.randomIntFromRange(DOWN, UP), speed: 3.2, timeout: {min: 2900, max: 4400, current: 0}, timer: 0},
-    {cell: 3, width: laneWidth, height: canvasHeight, direction: this.lib.randomIntFromRange(DOWN, UP), speed: 4.1, timeout: {min: 2400, max: 3900, current: 0}, timer: 0},
-    {cell: 4, width: laneWidth, height: canvasHeight, direction: this.lib.randomIntFromRange(DOWN, UP), speed: 5.5, timeout: {min: 1800, max: 2900, current: 0}, timer: 0},
-  ]
+  setLanes.call(this);
 
   var random;
   for(var i = 0; i < CARS_MAX; i++) {
@@ -52,3 +46,29 @@ function RoadManager(lib, canvasWidth, canvasHeight, laneWidth) {
 }
 
 RoadManager.prototype = Object.create(Manager.prototype);
+
+function setLanes() {
+  this.lanes = [
+    // Cell number for a lane, width of a lane, height of a lane, cars direction in lane, speed of cars in pixels, timeout of a lane, current timer
+    {cell: 1, width: this.laneWidth, height: this.canvasHeight, direction: this.lib.randomIntFromRange(DOWN, UP), speed: 2.5, timeout: {min: 3500, max: 5000, current: 0}, timer: 0},
+    {cell: 2, width: this.laneWidth, height: this.canvasHeight, direction: this.lib.randomIntFromRange(DOWN, UP), speed: 3.2, timeout: {min: 2900, max: 4400, current: 0}, timer: 0},
+    {cell: 3, width: this.laneWidth, height: this.canvasHeight, direction: this.lib.randomIntFromRange(DOWN, UP), speed: 4.1, timeout: {min: 2400, max: 3900, current: 0}, timer: 0},
+    {cell: 4, width: this.laneWidth, height: this.canvasHeight, direction: this.lib.randomIntFromRange(DOWN, UP), speed: 4.8, timeout: {min: 1800, max: 2900, current: 0}, timer: 0},
+  ];
+}
+
+RoadManager.prototype.setLevel = function(level) {
+
+  var self = this;
+  this.lanes.forEach(function(lane) {
+    lane.direction = self.lib.randomIntFromRange(DOWN, UP);
+    lane.speed += Math.pow(level, 1/4) * 0.2;
+    var decrease = self.lib.randomIntFromRange(90, 140);
+    lane.timeout.min -= (lane.timeout.min > 700) ? decrease : 0;
+    lane.timeout.max -= (lane.timeout.max > lane.timeout.min + decrease)? decrease : 0;
+    lane.timer = 0;
+  });
+
+  this.resetLanes();
+
+}

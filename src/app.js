@@ -13,7 +13,7 @@ const RiverManager = require('./river-manager.js');
 /* Global variables */
 var canvas = document.getElementById('screen');
 var game = new Game(canvas, update, render);
-var player = new Player({x: 0, y: 192});
+var player = new Player({x: 0, y: 192}, canvas.width, canvas.height, CELL_SIZE);
 var lib = new Lib();
 var roadManager = new RoadManager(lib, canvas.width, canvas.height, CELL_SIZE);
 roadManager.init();
@@ -21,6 +21,9 @@ var riverManager = new RiverManager(lib, canvas.width, canvas.height, CELL_SIZE)
 riverManager.init();
 var background = new Image();
 background.src = 'assets/background.png';
+
+var level = 1;
+var score = 0;
 
 /**
  * @function masterLoop
@@ -43,10 +46,25 @@ masterLoop(performance.now());
  * the number of milliseconds passed since the last frame.
  */
 function update(elapsedTime) {
+
+  if(player.hasWon()) {
+    level++;
+    score += Math.floor(300 * Math.sqrt(level));
+    player.reset();
+    roadManager.setLevel(level);
+    riverManager.setLevel(level);
+    return;
+  }
+
+  riverManager.update(elapsedTime);
   player.update(elapsedTime);
   roadManager.update(elapsedTime);
-  riverManager.update(elapsedTime);
-  // TODO: Update the game objects
+
+  if(player.checkCollisions(roadManager.entitiesActive, riverManager.entitiesActive)) {
+    player.lives--;
+    player.reset();
+  }
+
 }
 
 /**
@@ -58,7 +76,12 @@ function update(elapsedTime) {
   */
 function render(elapsedTime, ctx) {
   ctx.drawImage(background, 0, 0);
+  riverManager.render(elapsedTime, ctx);
   player.render(elapsedTime, ctx);
   roadManager.render(elapsedTime, ctx);
-  riverManager.render(elapsedTime, ctx);
+
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 1em Georgia";
+  ctx.fillText("Level: " + level, 10, 20);
+  ctx.fillText("Score: " + score, 10, 40);
 }

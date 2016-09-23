@@ -64,4 +64,12 @@ Mini and Sports Car art was provided by  [bahi](http://opengameart.org/users/bah
 
 Sedan and Pickup art was provided by  [bahi](http://opengameart.org/users/bahi) of [Open Game Art](http://opengameart.org) under a CC-BY license.
 
+The grass texture was provided by [gubodup](http://opengameart.org/users/qubodup) of [Open Game Art](http://opengameart.org) under a CC-BY license.
+
+The road texture was provided by [bart](http://opengameart.org/users/bart) of [Open Game Art](http://opengameart.org) as a public domain work.
+
+The water texture was provided by [gubodup](http://opengameart.org/users/qubodup) of [Open Game Art](http://opengameart.org) as a public domain work.
+
+Log art was provided by [miroslav.marinkovic](https://openclipart.org/user-detail/miroslav.marinkovic) of [openclipart](https://openclipart.org/) under a CC-BY license.
+
 Game framework HTML5/CSS3/Javascript code was written by course instructor Nathan Bean, and released under a CC-BY license.

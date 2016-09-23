@@ -18,6 +18,7 @@ function Manager(lib, canvasWidth, canvasHeight, laneWidth) {
   this.canvasWidth = canvasWidth;
   this.canvasHeight = canvasHeight;
   this.lanes = undefined;
+  this.laneWidth = laneWidth;
   this.entityQueue = []; // Cars waiting to be placed
   this.entitiesActive = []; // Active cars
 }
@@ -50,6 +51,13 @@ function isOutOfBounds(entity) {
       || entity.y < (0 - entity.height);
 }
 
+function pushBackEntity(index) {
+  var entity = this.entitiesActive[index];
+  this.entitiesActive.splice(index, 1);
+  entity.reset();
+  this.entityQueue.push(entity);
+}
+
 /**
  * @function detectEntities
  * Removes an entity from the active entities and pushes it
@@ -57,14 +65,9 @@ function isOutOfBounds(entity) {
  */
 function detectEntities(){
   var i = this.entitiesActive.length;
-  var entity = undefined;
   while(i--) {
     if(isOutOfBounds.call(this, this.entitiesActive[i])) {
-      entity = this.entitiesActive[i];
-      this.entitiesActive.splice(i, 1);
-      //console.log("Car " + car.id + " pushed back from " + (car.x / 64));
-      entity.reset();
-      this.entityQueue.push(entity);
+      pushBackEntity.call(this, i);
     }
   }
 }
@@ -92,6 +95,14 @@ function spotEntity(elapsedTime) {
       }
     }
   });
+}
+
+Manager.prototype.resetLanes = function() {
+  var i = this.entitiesActive.length;
+  while(i--) {
+    pushBackEntity.call(this, i);
+  }
+  this.init();
 }
 
 /**
